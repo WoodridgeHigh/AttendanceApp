@@ -1,0 +1,271 @@
+/* ============================================================
+   School Attendance — "Register" visual language
+   Ledger book feel: ink navy, paper cream, stamp-style toggles.
+   ============================================================ */
+
+:root {
+  --ink: #1C2B39;
+  --ink-soft: #2E4257;
+  --paper: #F6F2E9;
+  --paper-line: #E4DCC8;
+  --charcoal: #2A2A28;
+  --present: #3F6C51;
+  --present-bg: #E4EEE3;
+  --absent: #B5462F;
+  --absent-bg: #F5E2DA;
+  --gold: #C99A3E;
+  --radius: 3px;
+  --shadow: 0 1px 3px rgba(28, 43, 57, 0.12);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--charcoal);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+h1, h2, h3, .display {
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.mono, .roll, .timestamp, td.num {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+a { color: var(--ink-soft); }
+
+/* ── Layout shells ─────────────────────────────────────────── */
+
+.topbar {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar .brand {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.topbar .brand span { color: var(--gold); }
+
+.topbar .who {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.topbar button.link {
+  background: none;
+  border: 1px solid rgba(246, 242, 233, 0.4);
+  color: var(--paper);
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.topbar button.link:hover { background: rgba(246, 242, 233, 0.1); }
+
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+.card {
+  background: #FFFDF8;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.center-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Login ─────────────────────────────────────────────────── */
+
+.login-card {
+  width: 380px;
+  text-align: center;
+  padding: 40px 32px;
+}
+
+.login-card .display { font-size: 1.6rem; margin: 0 0 4px; }
+.login-card .subtitle { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 28px; }
+.login-card .gsi-holder { display: flex; justify-content: center; }
+.login-card .error { color: var(--absent); font-size: 0.85rem; margin-top: 16px; }
+
+/* ── Class picker chip (admin viewing any class) ─────────────── */
+
+.class-select {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;
+}
+.class-select select, .class-select input[type="date"] {
+  font-family: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+/* ── Roll-call ledger table ──────────────────────────────────── */
+
+table.roll {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.roll th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  border-bottom: 2px solid var(--ink);
+  padding: 8px 6px;
+}
+table.roll td {
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--paper-line);
+  vertical-align: middle;
+}
+table.roll .roll-no {
+  display: inline-block;
+  min-width: 28px;
+  color: var(--ink-soft);
+}
+
+/* Stamp-style present/absent toggle */
+.stamp-toggle {
+  display: inline-flex;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.stamp-toggle button {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+.stamp-toggle button.active.present { background: var(--present); color: #fff; }
+.stamp-toggle button.active.absent { background: var(--absent); color: #fff; }
+.stamp-toggle button + button { border-left: 1.5px solid var(--ink); }
+
+.summary-bar {
+  display: flex; gap: 24px; margin-bottom: 18px; font-size: 0.9rem;
+}
+.summary-bar .pill {
+  padding: 5px 12px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+}
+.pill.present { background: var(--present-bg); color: var(--present); }
+.pill.absent { background: var(--absent-bg); color: var(--absent); }
+
+.btn {
+  font-family: inherit;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+}
+.btn:hover { background: var(--ink-soft); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.btn.small { padding: 7px 12px; font-size: 0.78rem; }
+
+.status-banner {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+.status-banner.ok { background: var(--present-bg); color: var(--present); }
+.status-banner.warn { background: var(--absent-bg); color: var(--absent); }
+
+/* ── Admin dashboard grid ─────────────────────────────────────── */
+
+.grade-block { margin-bottom: 28px; }
+.grade-block h3 { margin-bottom: 10px; font-size: 1.05rem; }
+
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+@media (max-width: 720px) {
+  .class-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.class-tile {
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  background: #fff;
+  padding: 12px 8px;
+  text-align: center;
+}
+.class-tile .sec {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.1rem;
+}
+.class-tile .dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  margin-bottom: 6px;
+}
+.class-tile.marked .dot { background: var(--present); }
+.class-tile.unmarked .dot { background: var(--absent); }
+.class-tile .count { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--ink-soft); margin-top: 4px; }
+
+/* ── Absentee / WhatsApp queue ───────────────────────────────── */
+
+.absentee-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 6px;
+  border-bottom: 1px solid var(--paper-line);
+}
+.absentee-row .who { display: flex; flex-direction: column; }
+.absentee-row .who .name { font-weight: 600; }
+.absentee-row .who .meta { font-size: 0.78rem; color: var(--ink-soft); }
+.absentee-row.sent { opacity: 0.45; }
+.absentee-row .no-phone { color: var(--absent); font-size: 0.78rem; }
+
+textarea.template {
+  width: 100%;
+  font-family: inherit;
+  padding: 10px;
+  border: 1px solid var(--paper-line);
+  border-radius: var(--radius);
+  min-height: 70px;
+  resize: vertical;
+}
+
+.hint { font-size: 0.8rem; color: var(--ink-soft); }
+.empty-state { text-align: center; padding: 30px; color: var(--ink-soft); }
+
+input[type="file"] { font-family: inherit; }

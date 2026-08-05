@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark Attendance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Attendance <span>Register</span></div>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <div class="who" id="whoLabel"></div>
+    <button class="link" onclick="changePassword()">Change password</button>
+    <button class="link" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<div class="page">
+  <h2 id="classTitle" class="display"></h2>
+
+  <div class="class-select">
+    <label class="hint">Date</label>
+    <input type="date" id="datePicker">
+  </div>
+
+  <div id="banner"></div>
+
+  <div class="card">
+    <div class="summary-bar">
+      <span class="pill present" id="presentCount">Present: 0</span>
+      <span class="pill absent" id="absentCount">Absent: 0</span>
+    </div>
+
+    <table class="roll" id="rollTable">
+      <thead>
+        <tr><th style="width:50px;">#</th><th>Student</th><th style="width:190px;">Status</th></tr>
+      </thead>
+      <tbody id="rollBody"></tbody>
+    </table>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      No students found for this class yet. Ask the admin to add students.
+    </div>
+  </div>
+
+  <button class="btn" id="submitBtn" onclick="submitAttendance()">Save attendance</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabaseClient.js"></script>
+<script src="js/teacher.js"></script>
+</body>
+</html>

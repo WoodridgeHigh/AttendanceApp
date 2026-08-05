@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Attendance Register</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .tabs { display:flex; gap:6px; margin-bottom: 18px; }
+  .tabs button { font-family: inherit; background: transparent; border: 1px solid var(--paper-line); padding: 9px 16px; border-radius: var(--radius); cursor: pointer; font-size: 0.85rem; }
+  .tabs button.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tabpanel { display: none; }
+  .tabpanel.active { display: block; }
+  .form-row { display:flex; gap:10px; margin-bottom:10px; flex-wrap: wrap; }
+  .form-row input, .form-row select { flex:1; min-width:140px; padding:8px 10px; border:1px solid var(--paper-line); border-radius: var(--radius); font-family:inherit; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Attendance <span>Register</span> · Admin</div>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <div class="who" id="whoLabel"></div>
+    <button class="link" onclick="changePassword()">Change password</button>
+    <button class="link" onclick="signOut()">Sign out</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="tabs">
+    <button class="active" data-tab="overview" onclick="showTab('overview')">Overview</button>
+    <button data-tab="absentees" onclick="showTab('absentees')">Absentees &amp; WhatsApp</button>
+    <button data-tab="roster" onclick="showTab('roster')">Students</button>
+    <button data-tab="teachers" onclick="showTab('teachers')">Teachers</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tabpanel active" id="tab-overview">
+    <div class="class-select">
+      <label class="hint">Date</label>
+      <input type="date" id="dashDate">
+      <button class="btn small secondary" onclick="loadDashboard()">Refresh</button>
+    </div>
+    <div id="dashboardGrid"></div>
+  </div>
+
+  <!-- ABSENTEES / WHATSAPP -->
+  <div class="tabpanel" id="tab-absentees">
+    <div class="class-select">
+      <label class="hint">Date</label>
+      <input type="date" id="absDate">
+      <select id="absGrade"><option value="">All grades</option><option>6</option><option>7</option><option>8</option></select>
+      <select id="absSection"><option value="">All sections</option></select>
+      <button class="btn small secondary" onclick="loadAbsentees()">Find absentees</button>
+    </div>
+
+    <div class="card">
+      <label class="hint">Message template — <span class="mono">{name}</span> and <span class="mono">{date}</span> are replaced automatically</label>
+      <textarea class="template" id="msgTemplate">Dear Parent, this is to inform you that your ward {name} was marked ABSENT from school on {date}. Please contact the class teacher if this is unexpected. — School Administration</textarea>
+    </div>
+
+    <div class="card" id="absenteeList">
+      <div class="empty-state">Pick a date and click "Find absentees".</div>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div class="tabpanel" id="tab-roster">
+    <div class="card">
+      <h3>Add one student</h3>
+      <div class="form-row">
+        <input id="stuName" placeholder="Full name">
+        <select id="stuGrade"><option>6</option><option>7</option><option>8</option></select>
+        <select id="stuSection"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+      </div>
+      <div class="form-row">
+        <input id="stuParentName" placeholder="Parent name">
+        <input id="stuParentPhone" placeholder="Parent WhatsApp number, e.g. 91XXXXXXXXXX">
+        <button class="btn small" onclick="addStudent()">Add student</button>
+      </div>
+      <div class="hint">Phone must include country code, digits only (no + or spaces) — e.g. 91XXXXXXXXXX for India.</div>
+    </div>
+
+    <div class="card">
+      <h3>Bulk import via CSV</h3>
+      <p class="hint">Columns, in order, no header row needed if you use the template: name, grade, section, parentName, parentPhone</p>
+      <input type="file" id="csvFile" accept=".csv">
+      <button class="btn small" onclick="importCsv()">Import CSV</button>
+      <div id="importStatus" class="hint" style="margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- TEACHERS -->
+  <div class="tabpanel" id="tab-teachers">
+    <div class="card">
+      <h3>Register a teacher</h3>
+      <div class="form-row">
+        <input id="teachName" placeholder="Full name">
+        <input id="teachUsername" placeholder="Username (e.g. jsmith)">
+        <input id="teachPassword" placeholder="Initial password (6+ chars)" type="text">
+      </div>
+      <div class="form-row">
+        <select id="teachRole"><option value="teacher">Teacher (single class)</option><option value="admin">Admin (full access)</option></select>
+        <select id="teachGrade"><option>6</option><option>7</option><option>8</option></select>
+        <select id="teachSection"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+        <button class="btn small" onclick="addTeacher()">Add teacher</button>
+      </div>
+      <div class="hint">For an Admin role, grade/section are ignored. Share the username and initial password with the teacher directly — tell them to change it after their first sign-in.</div>
+    </div>
+    <div class="card" id="teacherList"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/supabaseClient.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
